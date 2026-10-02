@@ -1,0 +1,195 @@
+EXPRESIONES SSIS LISTAS PARA COPIAR (generadas desde GUIA_PASO_A_PASO.md)
+Formato: [sección]  NombreColumna, y en la línea siguiente la expresión
+==============================================================================
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  TipoDocumento
+(DT_WSTR,2)UPPER(TRIM(REPLACENULL(DocumentType,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  NumeroDocumento
+(DT_WSTR,10)UPPER(TRIM(REPLACENULL(DocumentNumber,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  PrimerNombre
+LEN(TRIM(REPLACENULL(FirstName,"")))==0 ? NULL(DT_WSTR,50) : (DT_WSTR,50)(UPPER(SUBSTRING(TRIM(FirstName),1,1)) + LOWER(SUBSTRING(TRIM(FirstName),2,50)))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  SegundoNombre
+LEN(TRIM(REPLACENULL(MiddleName,"")))==0 ? NULL(DT_WSTR,50) : (DT_WSTR,50)(UPPER(SUBSTRING(TRIM(MiddleName),1,1)) + LOWER(SUBSTRING(TRIM(MiddleName),2,50)))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  PrimerApellido
+LEN(TRIM(REPLACENULL(LastName,"")))==0 ? NULL(DT_WSTR,50) : (DT_WSTR,50)(UPPER(SUBSTRING(TRIM(LastName),1,1)) + LOWER(SUBSTRING(TRIM(LastName),2,50)))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  SegundoApellido
+LEN(TRIM(REPLACENULL(SecondLastName,"")))==0 ? NULL(DT_WSTR,50) : (DT_WSTR,50)(UPPER(SUBSTRING(TRIM(SecondLastName),1,1)) + LOWER(SUBSTRING(TRIM(SecondLastName),2,50)))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Sexo
+UPPER(TRIM(REPLACENULL(Sex,"")))=="M" || UPPER(TRIM(REPLACENULL(Sex,"")))=="F" || UPPER(TRIM(REPLACENULL(Sex,"")))=="ND" ? (DT_WSTR,2)UPPER(TRIM(REPLACENULL(Sex,""))) : NULL(DT_WSTR,2)
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  EstadoCivil
+(DT_WSTR,15)UPPER(TRIM(REPLACENULL(MaritalStatus,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Email
+FINDSTRING(LOWER(TRIM(REPLACENULL(Email,""))),"@",1) > 1 && FINDSTRING(SUBSTRING(LOWER(TRIM(REPLACENULL(Email,""))),FINDSTRING(LOWER(TRIM(REPLACENULL(Email,""))),"@",1)+1,120),".",1) > 0 ? (DT_WSTR,120)LOWER(TRIM(REPLACENULL(Email,""))) : NULL(DT_WSTR,120)
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Telefono
+LEN(REPLACE(TRIM(REPLACENULL(Phone,"")),"-",""))==10 ? (DT_WSTR,10)REPLACE(TRIM(REPLACENULL(Phone,"")),"-","") : NULL(DT_WSTR,10)
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  DepCodigo
+(DT_WSTR,3)UPPER(TRIM(REPLACENULL(DepartmentCode,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  DepNombre
+(DT_WSTR,60)UPPER(TRIM(REPLACENULL(DepartmentName,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  MunicipioCodigo
+(DT_WSTR,4)UPPER(TRIM(REPLACENULL(MunicipalityCode,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Zona
+UPPER(TRIM(REPLACENULL(Zone,"")))=="URBANA" || UPPER(TRIM(REPLACENULL(Zone,"")))=="RURAL" ? (DT_WSTR,10)UPPER(TRIM(REPLACENULL(Zone,""))) : NULL(DT_WSTR,10)
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Direccion
+(DT_WSTR,120)TRIM(REPLACENULL(Address,""))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  TipoVivienda
+(DT_WSTR,15)UPPER(TRIM(REPLACENULL(HousingType,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Estrato
+TRIM(REPLACENULL(SocioeconomicStratum,""))=="1" || TRIM(REPLACENULL(SocioeconomicStratum,""))=="2" || TRIM(REPLACENULL(SocioeconomicStratum,""))=="3" || TRIM(REPLACENULL(SocioeconomicStratum,""))=="4" || TRIM(REPLACENULL(SocioeconomicStratum,""))=="5" || TRIM(REPLACENULL(SocioeconomicStratum,""))=="6" ? (DT_I4)TRIM(REPLACENULL(SocioeconomicStratum,"")) : NULL(DT_I4)
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  NivelEducativoCodigo
+(DT_WSTR,20)UPPER(TRIM(REPLACENULL(EducationLevel,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  SituacionLaboralCodigo
+(DT_WSTR,20)UPPER(TRIM(REPLACENULL(EmploymentStatus,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  OcupacionCodigo
+LEN(TRIM(REPLACENULL(OccupationCode,"")))==0 ? NULL(DT_WSTR,3) : (DT_WSTR,3)UPPER(TRIM(OccupationCode))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Empleador
+LEN(TRIM(REPLACENULL(EmployerName,"")))==0 ? NULL(DT_WSTR,100) : (DT_WSTR,100)TRIM(EmployerName)
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  TipoContrato
+(DT_WSTR,15)UPPER(TRIM(REPLACENULL(ContractType,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  RegimenSalud
+LEN(TRIM(REPLACENULL(HealthRegime,"")))==0 || UPPER(TRIM(REPLACENULL(HealthRegime,"")))=="NULL" || UPPER(TRIM(REPLACENULL(HealthRegime,"")))=="SIN DATO" || UPPER(TRIM(REPLACENULL(HealthRegime,"")))=="N/A" ? NULL(DT_WSTR,15) : (DT_WSTR,15)UPPER(TRIM(REPLACENULL(HealthRegime,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  Discapacidad
+UPPER(TRIM(REPLACENULL(Disability,"")))=="SÍ" || UPPER(TRIM(REPLACENULL(Disability,"")))=="1" ? (DT_WSTR,2)"SI" : (UPPER(TRIM(REPLACENULL(Disability,"")))=="0" ? (DT_WSTR,2)"NO" : (DT_WSTR,2)UPPER(TRIM(REPLACENULL(Disability,""))))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  CanalOrigen
+(DT_WSTR,12)UPPER(TRIM(REPLACENULL(SourceChannel,"")))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  FechaNacimientoISO
+FINDSTRING(TRIM(REPLACENULL(BirthDate,"")),"/",1) > 0 ? (DT_WSTR,10)(SUBSTRING(TRIM(BirthDate),7,4) + "-" + SUBSTRING(TRIM(BirthDate),4,2) + "-" + SUBSTRING(TRIM(BirthDate),1,2)) : (DT_WSTR,10)TRIM(REPLACENULL(BirthDate,""))
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  IngresoTexto
+(DT_WSTR,30)REPLACE(REPLACE(REPLACE(REPLACE(TRIM(REPLACENULL(MonthlyIncome,"")),"$","")," ",""),".",""),",",".")
+
+[d) DC1 Normalizar texto · Derived Column (todas "agregar como nueva columna")]  GastoTexto
+(DT_WSTR,30)REPLACE(REPLACE(REPLACE(REPLACE(TRIM(REPLACENULL(MonthlyExpenses,"")),"$","")," ",""),".",""),",",".")
+
+[e) DCV Enteros · Data Conversion]  SourceRowId
+SourceRowIdNum
+
+[e) DCV Enteros · Data Conversion]  ReportedAge
+EdadReportada
+
+[e) DCV Enteros · Data Conversion]  HouseholdSize
+TamanoHogar
+
+[f) DC2 Convertir tipos y claves · Derived Column]  FechaNacimiento
+(DT_DBDATE)FechaNacimientoISO
+
+[f) DC2 Convertir tipos y claves · Derived Column]  FechaEncuesta
+(DT_DBDATE)TRIM(REPLACENULL(SurveyDate,""))
+
+[f) DC2 Convertir tipos y claves · Derived Column]  FechaInicioEmpleo
+LEN(TRIM(REPLACENULL(EmploymentStartDate,"")))==0 ? NULL(DT_DBDATE) : (DT_DBDATE)TRIM(REPLACENULL(EmploymentStartDate,""))
+
+[f) DC2 Convertir tipos y claves · Derived Column]  FechaActualizacion
+(DT_DBTIMESTAMP)TRIM(REPLACENULL(UpdatedAt,""))
+
+[f) DC2 Convertir tipos y claves · Derived Column]  IngresoMensual
+LEN(IngresoTexto)==0 ? NULL(DT_NUMERIC,18,2) : (DT_NUMERIC,18,2)IngresoTexto
+
+[f) DC2 Convertir tipos y claves · Derived Column]  GastoMensual
+LEN(GastoTexto)==0 ? NULL(DT_NUMERIC,18,2) : (DT_NUMERIC,18,2)GastoTexto
+
+[f) DC2 Convertir tipos y claves · Derived Column]  PersonasACargo
+FINDSTRING(TRIM(REPLACENULL(Dependents,"")),".",1) > 0 || FINDSTRING(TRIM(REPLACENULL(Dependents,"")),",",1) > 0 ? NULL(DT_I4) : (DT_I4)TRIM(REPLACENULL(Dependents,""))
+
+[f) DC2 Convertir tipos y claves · Derived Column]  DocNumeroParte
+(DT_I4)SUBSTRING(NumeroDocumento,4,7)
+
+[f) DC2 Convertir tipos y claves · Derived Column]  ClaveObservacion
+(DT_WSTR,40)(TipoDocumento + "|" + NumeroDocumento + "|" + TRIM(REPLACENULL(SurveyDate,"")))
+
+[f) DC2 Convertir tipos y claves · Derived Column]  RankKey
+(DT_I8)REPLACE(REPLACE(REPLACE(TRIM(REPLACENULL(UpdatedAt,"")),"-","")," ",""),":","") * 10000 + (9999 - SourceRowIdNum)
+
+[j) Resolución de duplicados (clave de observación = tipo + número de documento + fecha de encuesta)]  SourceRowIdConservado
+(DT_I4)(9999 - RankGanador % 10000)
+
+[j) Resolución de duplicados (clave de observación = tipo + número de documento + fecha de encuesta)]  VersionesInt
+(DT_I4)Versiones
+
+[j) Resolución de duplicados (clave de observación = tipo + número de documento + fecha de encuesta)]  MotivoDuplicado
+(DT_WSTR,300)("Misma persona y fecha de encuesta; se conserva la fila " + (DT_WSTR,10)(9999 - RankGanador % 10000) + " (UpdatedAt más reciente; si empata, la primera aparición)")
+
+[l) DC4 Reglas de revision · Derived Column]  R_Nacimiento
+(DT_WSTR,100)(ISNULL(FechaNacimiento) ? "Fecha de nacimiento inválida; " : (FechaNacimiento > FechaEncuesta ? "Nacimiento posterior a la encuesta; " : (ISNULL(EdadReportada) ? "Edad inconsistente con nacimiento y encuesta; " : (ABS(DATEDIFF("yy",(DT_DBTIMESTAMP)FechaNacimiento,(DT_DBTIMESTAMP)FechaEncuesta) - EdadReportada) > 1 ? "Edad inconsistente con nacimiento y encuesta; " : ""))))
+
+[l) DC4 Reglas de revision · Derived Column]  R_Ubicacion
+(DT_WSTR,150)(ISNULL(CatDepCodigoMun) ? "Municipio no existe en catálogo; " : ((CatDepCodigoMun != DepCodigo ? "Departamento incoherente con municipio; " : "") + (ISNULL(CatDepNombre) ? "" : (CatDepNombre != DepNombre ? "Nombre de departamento incoherente con código; " : ""))))
+
+[l) DC4 Reglas de revision · Derived Column]  R_Economia
+(DT_WSTR,100)((LEN(IngresoTexto)==0 ? "Ingreso faltante; " : (ISNULL(IngresoMensual) ? "Ingreso no numérico; " : (IngresoMensual < 0 ? "Ingreso negativo; " : ""))) + (LEN(GastoTexto)==0 ? "Gasto faltante; " : (ISNULL(GastoMensual) ? "Gasto no numérico; " : (GastoMensual < 0 ? "Gasto negativo; " : ""))))
+
+[l) DC4 Reglas de revision · Derived Column]  R_Hogar
+(DT_WSTR,100)((ISNULL(PersonasACargo) ? "Personas a cargo inválido; " : (PersonasACargo < 0 ? "Personas a cargo inválido; " : "")) + (ISNULL(TamanoHogar) ? "Tamaño de hogar inválido; " : (TamanoHogar < 1 ? "Tamaño de hogar inválido; " : "")))
+
+[l) DC4 Reglas de revision · Derived Column]  R_Laboral
+(DT_WSTR,100)(((SituacionLaboralCodigo=="EMPLEADO" ? (TipoContrato=="NO_APLICA" || ISNULL(OcupacionCodigo)) : (SituacionLaboralCodigo=="INDEPENDIENTE" ? (ISNULL(OcupacionCodigo) || !ISNULL(Empleador)) : (TipoContrato!="NO_APLICA" || !ISNULL(OcupacionCodigo) || !ISNULL(Empleador) || !ISNULL(FechaInicioEmpleo)))) ? "Información laboral inconsistente; " : "") + (ISNULL(FechaInicioEmpleo) ? (LEN(TRIM(REPLACENULL(EmploymentStartDate,""))) > 0 ? "Fecha de inicio de empleo incoherente; " : "") : (FechaInicioEmpleo > FechaEncuesta || FechaInicioEmpleo < REPLACENULL(FechaNacimiento,(DT_DBDATE)"1900-01-01") ? "Fecha de inicio de empleo incoherente; " : "")))
+
+[l) DC4 Reglas de revision · Derived Column]  R_Fechas
+(DT_WSTR,100)(ISNULL(FechaActualizacion) ? "Fecha de actualización inválida; " : ((DT_DBDATE)FechaActualizacion < FechaEncuesta ? "Fecha de actualización anterior a la encuesta; " : ""))
+
+[l) DC4 Reglas de revision · Derived Column]  R_Catalogos
+(DT_WSTR,200)((ISNULL(CatNivel) ? "Nivel educativo no válido; " : "") + (ISNULL(CatSituacion) ? "Situación laboral no válida; " : "") + (!ISNULL(OcupacionCodigo) && ISNULL(CatOcupacion) ? "Ocupación no válida; " : "") + (EstadoCivil!="SOLTERO" && EstadoCivil!="CASADO" && EstadoCivil!="UNION_LIBRE" && EstadoCivil!="DIVORCIADO" && EstadoCivil!="VIUDO" ? "Estado civil no válido; " : "") + (TipoVivienda!="PROPIA" && TipoVivienda!="ARRENDADA" && TipoVivienda!="FAMILIAR" && TipoVivienda!="OTRA" ? "Tipo de vivienda no válido; " : "") + (TipoContrato!="FIJO" && TipoContrato!="INDEFINIDO" && TipoContrato!="SERVICIOS" && TipoContrato!="NO_APLICA" ? "Tipo de contrato no válido; " : "") + (Discapacidad!="SI" && Discapacidad!="NO" && Discapacidad!="ND" ? "Discapacidad no válida; " : "") + (CanalOrigen!="WEB" && CanalOrigen!="TELEFONO" && CanalOrigen!="PRESENCIAL" && CanalOrigen!="FAX" ? "Canal no válido; " : ""))
+
+[m) DC5 Motivo revision · Derived Column]  MotivoRevision
+(DT_WSTR,1000)(R_Nacimiento + R_Ubicacion + R_Economia + R_Hogar + R_Laboral + R_Fechas + R_Catalogos)
+
+[Derived Column de Dim Tiempo]  TiempoKey
+YEAR((DT_DBTIMESTAMP)FechaEncuesta) * 10000 + MONTH((DT_DBTIMESTAMP)FechaEncuesta) * 100 + DAY((DT_DBTIMESTAMP)FechaEncuesta)
+
+[Derived Column de Dim Tiempo]  Anio
+YEAR((DT_DBTIMESTAMP)FechaEncuesta)
+
+[Derived Column de Dim Tiempo]  Trimestre
+DATEPART("qq",(DT_DBTIMESTAMP)FechaEncuesta)
+
+[Derived Column de Dim Tiempo]  Mes
+MONTH((DT_DBTIMESTAMP)FechaEncuesta)
+
+[Derived Column de Dim Tiempo]  Dia
+DAY((DT_DBTIMESTAMP)FechaEncuesta)
+
+[Derived Column de Dim Tiempo]  NombreMes
+(DT_WSTR,15)(MONTH((DT_DBTIMESTAMP)FechaEncuesta)==1 ? "Enero" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==2 ? "Febrero" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==3 ? "Marzo" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==4 ? "Abril" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==5 ? "Mayo" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==6 ? "Junio" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==7 ? "Julio" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==8 ? "Agosto" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==9 ? "Septiembre" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==10 ? "Octubre" : MONTH((DT_DBTIMESTAMP)FechaEncuesta)==11 ? "Noviembre" : "Diciembre")
+
+[Derived Column de Dim Persona]  NombreCompleto
+(DT_WSTR,220)(PrimerNombre + REPLACENULL(" " + SegundoNombre,"") + " " + PrimerApellido + REPLACENULL(" " + SegundoApellido,""))
+
+[4.4 DFT Fact Observacion]  TiempoKey
+YEAR((DT_DBTIMESTAMP)FechaEncuesta) * 10000 + MONTH((DT_DBTIMESTAMP)FechaEncuesta) * 100 + DAY((DT_DBTIMESTAMP)FechaEncuesta)
+
+[4.4 DFT Fact Observacion]  BalanceMensual
+(DT_NUMERIC,18,2)(IngresoMensual - GastoMensual)
+
+[4.4 DFT Fact Observacion]  CantidadObservaciones
+(DT_I4)1
+
+[DC3 Rechazo y cambios]  MotivoRechazo
+(DT_WSTR,300)((NumeroDocumento=="" || NumeroDocumento=="SIN-DATO" ? "Documento faltante; " : (LEN(NumeroDocumento)!=10 || SUBSTRING(NumeroDocumento,1,3)!="SIM" || ISNULL(DocNumeroParte) ? "Documento con formato inválido; " : "")) + (TipoDocumento!="CC" && TipoDocumento!="CE" && TipoDocumento!="PA" ? "Tipo de documento inválido; " : "") + (ISNULL(PrimerNombre) ? "Primer nombre faltante; " : "") + (ISNULL(PrimerApellido) ? "Primer apellido faltante; " : "") + (ISNULL(FechaEncuesta) ? "Fecha de encuesta inválida; " : ""))
+
+[DC3 Rechazo y cambios]  Cambios
+(DT_WSTR,1000)((REPLACENULL(DocumentType,"")!=TipoDocumento ? "TipoDocumento a mayúsculas; " : "") + (REPLACENULL(FirstName,"")!=REPLACENULL(PrimerNombre,"") ? "PrimerNombre estandarizado; " : "") + (REPLACENULL(MiddleName,"")!=REPLACENULL(SegundoNombre,"") ? "SegundoNombre estandarizado; " : "") + (REPLACENULL(LastName,"")!=REPLACENULL(PrimerApellido,"") ? "PrimerApellido estandarizado; " : "") + (REPLACENULL(SecondLastName,"")!=REPLACENULL(SegundoApellido,"") ? "SegundoApellido estandarizado; " : "") + (ISNULL(Sexo) ? "Sexo inválido a NULL; " : "") + (REPLACENULL(MaritalStatus,"")!=EstadoCivil ? "EstadoCivil a mayúsculas; " : "") + (ISNULL(Email) ? "Email inválido a NULL; " : "") + (ISNULL(Telefono) ? "Teléfono inválido a NULL; " : (REPLACENULL(Phone,"")!=Telefono ? "Teléfono sin guiones; " : "")) + (REPLACENULL(MunicipalityName,"")!=UPPER(REPLACENULL(MunicipalityName,"")) ? "Nombre de municipio tomado del catálogo; " : "") + (ISNULL(Zona) ? "Zona inválida a NULL; " : "") + (ISNULL(Estrato) ? "Estrato inválido a NULL; " : "") + (REPLACENULL(EducationLevel,"")!=NivelEducativoCodigo ? "NivelEducativo a mayúsculas; " : "") + (ISNULL(RegimenSalud) ? "RegimenSalud sin dato a NULL; " : "") + (REPLACENULL(Disability,"")!=Discapacidad ? "Discapacidad estandarizada; " : "") + (FINDSTRING(REPLACENULL(BirthDate,""),"/",1)>0 && !ISNULL(FechaNacimiento) ? "FechaNacimiento dd/mm/aaaa a ISO; " : "") + (FINDSTRING(REPLACENULL(MonthlyIncome,""),"$",1)>0 && !ISNULL(IngresoMensual) ? "Ingreso convertido de formato monetario; " : "") + (FINDSTRING(REPLACENULL(MonthlyExpenses,""),",",1)>0 && !ISNULL(GastoMensual) ? "Gasto convertido de formato monetario; " : "") + (REPLACENULL(PersonasACargo,-1) > REPLACENULL(TamanoHogar,99) ? "Advertencia: personas a cargo > tamaño del hogar; " : ""))
