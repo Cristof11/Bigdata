@@ -1,0 +1,12 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="DESKTOP-RAZE.PersonasDW"
+  DTS:DTSID="{BC21CE4A-671C-49C5-B811-E50BCA575206}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=DESKTOP-RAZE;Initial Catalog=PersonasDW;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Auto Translate=False;Application Name=SSIS-ProyectoETL_Personas-{BC21CE4A-671C-49C5-B811-E50BCA575206}DESKTOP-RAZE.PersonasDW;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
