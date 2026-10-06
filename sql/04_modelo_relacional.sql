@@ -6,6 +6,11 @@
    Entidades del MER (esquema dbo):
      Departamento 1--N Municipio 1--N Observacion N--1 Persona
      NivelEducativo, SituacionLaboral, Ocupacion, Empleador 1--N Observacion
+     TipoDocumento, Sexo 1--N Persona
+     EstadoCivil, Zona, TipoVivienda, Estrato, TipoContrato, RegimenSalud,
+     CondicionDiscapacidad, CanalOrigen 1--N Observacion
+   Todas las categorías son tablas de catálogo referenciadas con clave
+   foránea (3FN): la observación solo guarda el código.
    Persona     = clave natural (TipoDocumento, NumeroDocumento)
    Observacion = clave natural (PersonaId, FechaEncuesta)
 
@@ -25,6 +30,16 @@ DROP TABLE IF EXISTS dbo.SituacionLaboral;
 DROP TABLE IF EXISTS dbo.NivelEducativo;
 DROP TABLE IF EXISTS dbo.Municipio;
 DROP TABLE IF EXISTS dbo.Departamento;
+DROP TABLE IF EXISTS dbo.TipoDocumento;
+DROP TABLE IF EXISTS dbo.Sexo;
+DROP TABLE IF EXISTS dbo.EstadoCivil;
+DROP TABLE IF EXISTS dbo.Zona;
+DROP TABLE IF EXISTS dbo.TipoVivienda;
+DROP TABLE IF EXISTS dbo.Estrato;
+DROP TABLE IF EXISTS dbo.TipoContrato;
+DROP TABLE IF EXISTS dbo.RegimenSalud;
+DROP TABLE IF EXISTS dbo.CondicionDiscapacidad;
+DROP TABLE IF EXISTS dbo.CanalOrigen;
 GO
 
 /* ======================= CATÁLOGOS ======================= */
@@ -61,17 +76,29 @@ CREATE TABLE dbo.Empleador (
     Nombre      NVARCHAR(100) NOT NULL CONSTRAINT UQ_Empleador_Nombre UNIQUE
 );
 
+/* Catálogos de categorías (antes eran restricciones CHECK) */
+CREATE TABLE dbo.TipoDocumento        (TipoDocumentoCodigo   NVARCHAR(2)  NOT NULL CONSTRAINT PK_TipoDocumento PRIMARY KEY, Nombre NVARCHAR(40) NOT NULL);
+CREATE TABLE dbo.Sexo                 (SexoCodigo            NVARCHAR(2)  NOT NULL CONSTRAINT PK_Sexo PRIMARY KEY,          Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.EstadoCivil          (EstadoCivilCodigo     NVARCHAR(15) NOT NULL CONSTRAINT PK_EstadoCivil PRIMARY KEY,   Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.Zona                 (ZonaCodigo            NVARCHAR(10) NOT NULL CONSTRAINT PK_Zona PRIMARY KEY,          Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.TipoVivienda         (TipoViviendaCodigo    NVARCHAR(15) NOT NULL CONSTRAINT PK_TipoVivienda PRIMARY KEY,  Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.Estrato              (EstratoCodigo         INT          NOT NULL CONSTRAINT PK_Estrato PRIMARY KEY,       Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.TipoContrato         (TipoContratoCodigo    NVARCHAR(15) NOT NULL CONSTRAINT PK_TipoContrato PRIMARY KEY,  Nombre NVARCHAR(40) NOT NULL);
+CREATE TABLE dbo.RegimenSalud         (RegimenSaludCodigo    NVARCHAR(15) NOT NULL CONSTRAINT PK_RegimenSalud PRIMARY KEY,  Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.CondicionDiscapacidad(DiscapacidadCodigo    NVARCHAR(2)  NOT NULL CONSTRAINT PK_CondicionDiscapacidad PRIMARY KEY, Nombre NVARCHAR(30) NOT NULL);
+CREATE TABLE dbo.CanalOrigen          (CanalOrigenCodigo     NVARCHAR(12) NOT NULL CONSTRAINT PK_CanalOrigen PRIMARY KEY,   Nombre NVARCHAR(30) NOT NULL);
+
 /* ======================= ENTIDADES PRINCIPALES ======================= */
 CREATE TABLE dbo.Persona (
     PersonaId        INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Persona PRIMARY KEY,
-    TipoDocumento    NVARCHAR(2)   NOT NULL CONSTRAINT CK_Persona_TipoDoc CHECK (TipoDocumento IN (N'CC', N'CE', N'PA')),
+    TipoDocumento    NVARCHAR(2)   NOT NULL CONSTRAINT FK_Persona_TipoDocumento REFERENCES dbo.TipoDocumento (TipoDocumentoCodigo),
     NumeroDocumento  NVARCHAR(10)  NOT NULL,
     PrimerNombre     NVARCHAR(50)  NOT NULL,
     SegundoNombre    NVARCHAR(50)  NULL,
     PrimerApellido   NVARCHAR(50)  NOT NULL,
     SegundoApellido  NVARCHAR(50)  NULL,
     FechaNacimiento  DATE          NOT NULL,
-    Sexo             NVARCHAR(2)   NULL CONSTRAINT CK_Persona_Sexo CHECK (Sexo IN (N'M', N'F', N'ND')),
+    Sexo             NVARCHAR(2)   NULL CONSTRAINT FK_Persona_Sexo REFERENCES dbo.Sexo (SexoCodigo),
     Email            NVARCHAR(120) NULL,
     Telefono         NVARCHAR(10)  NULL,
     FechaCarga       DATETIME      NOT NULL CONSTRAINT DF_Persona_FechaCarga DEFAULT GETDATE(),
@@ -84,25 +111,25 @@ CREATE TABLE dbo.Observacion (
     FechaEncuesta            DATE          NOT NULL,
     SourceRowId              INT           NOT NULL CONSTRAINT UQ_Observacion_SourceRowId UNIQUE,
     EdadReportada            INT           NOT NULL,
-    EstadoCivil              NVARCHAR(15)  NOT NULL CONSTRAINT CK_Obs_EstadoCivil CHECK (EstadoCivil IN (N'SOLTERO', N'CASADO', N'UNION_LIBRE', N'DIVORCIADO', N'VIUDO')),
+    EstadoCivil              NVARCHAR(15)  NOT NULL CONSTRAINT FK_Observacion_EstadoCivil REFERENCES dbo.EstadoCivil (EstadoCivilCodigo),
     MunicipioCodigo          NVARCHAR(4)   NOT NULL CONSTRAINT FK_Observacion_Municipio REFERENCES dbo.Municipio (MunicipioCodigo),
-    Zona                     NVARCHAR(10)  NULL CONSTRAINT CK_Obs_Zona CHECK (Zona IN (N'URBANA', N'RURAL')),
+    Zona                     NVARCHAR(10)  NULL CONSTRAINT FK_Observacion_Zona REFERENCES dbo.Zona (ZonaCodigo),
     Direccion                NVARCHAR(120) NULL,
-    TipoVivienda             NVARCHAR(15)  NOT NULL CONSTRAINT CK_Obs_Vivienda CHECK (TipoVivienda IN (N'PROPIA', N'ARRENDADA', N'FAMILIAR', N'OTRA')),
-    Estrato                  INT           NULL CONSTRAINT CK_Obs_Estrato CHECK (Estrato BETWEEN 1 AND 6),
+    TipoVivienda             NVARCHAR(15)  NOT NULL CONSTRAINT FK_Observacion_TipoVivienda REFERENCES dbo.TipoVivienda (TipoViviendaCodigo),
+    Estrato                  INT           NULL CONSTRAINT FK_Observacion_Estrato REFERENCES dbo.Estrato (EstratoCodigo),
     NivelEducativoCodigo     NVARCHAR(20)  NOT NULL CONSTRAINT FK_Observacion_NivelEducativo REFERENCES dbo.NivelEducativo (NivelEducativoCodigo),
     SituacionLaboralCodigo   NVARCHAR(20)  NOT NULL CONSTRAINT FK_Observacion_SituacionLaboral REFERENCES dbo.SituacionLaboral (SituacionLaboralCodigo),
     OcupacionCodigo          NVARCHAR(3)   NULL CONSTRAINT FK_Observacion_Ocupacion REFERENCES dbo.Ocupacion (OcupacionCodigo),
     EmpleadorId              INT           NULL CONSTRAINT FK_Observacion_Empleador REFERENCES dbo.Empleador (EmpleadorId),
-    TipoContrato             NVARCHAR(15)  NOT NULL CONSTRAINT CK_Obs_Contrato CHECK (TipoContrato IN (N'FIJO', N'INDEFINIDO', N'SERVICIOS', N'NO_APLICA')),
+    TipoContrato             NVARCHAR(15)  NOT NULL CONSTRAINT FK_Observacion_TipoContrato REFERENCES dbo.TipoContrato (TipoContratoCodigo),
     FechaInicioEmpleo        DATE          NULL,
     IngresoMensual           DECIMAL(18,2) NOT NULL CONSTRAINT CK_Obs_Ingreso CHECK (IngresoMensual >= 0),
     GastoMensual             DECIMAL(18,2) NOT NULL CONSTRAINT CK_Obs_Gasto   CHECK (GastoMensual   >= 0),
     PersonasACargo           INT           NOT NULL CONSTRAINT CK_Obs_Cargo   CHECK (PersonasACargo >= 0),
     TamanoHogar              INT           NOT NULL CONSTRAINT CK_Obs_Hogar   CHECK (TamanoHogar    >= 1),
-    RegimenSalud             NVARCHAR(15)  NULL CONSTRAINT CK_Obs_Salud CHECK (RegimenSalud IN (N'CONTRIBUTIVO', N'SUBSIDIADO', N'ESPECIAL', N'NO_AFILIADO')),
-    Discapacidad             NVARCHAR(2)   NOT NULL CONSTRAINT CK_Obs_Discapacidad CHECK (Discapacidad IN (N'SI', N'NO', N'ND')),
-    CanalOrigen              NVARCHAR(12)  NOT NULL CONSTRAINT CK_Obs_Canal CHECK (CanalOrigen IN (N'WEB', N'TELEFONO', N'PRESENCIAL', N'FAX')),
+    RegimenSalud             NVARCHAR(15)  NULL CONSTRAINT FK_Observacion_RegimenSalud REFERENCES dbo.RegimenSalud (RegimenSaludCodigo),
+    Discapacidad             NVARCHAR(2)   NOT NULL CONSTRAINT FK_Observacion_Discapacidad REFERENCES dbo.CondicionDiscapacidad (DiscapacidadCodigo),
+    CanalOrigen              NVARCHAR(12)  NOT NULL CONSTRAINT FK_Observacion_CanalOrigen REFERENCES dbo.CanalOrigen (CanalOrigenCodigo),
     FechaActualizacionOrigen DATETIME      NOT NULL,
     FechaCarga               DATETIME      NOT NULL CONSTRAINT DF_Observacion_FechaCarga DEFAULT GETDATE(),
     CONSTRAINT UQ_Observacion_PersonaFecha UNIQUE (PersonaId, FechaEncuesta)   -- clave de observación
@@ -112,6 +139,17 @@ GO
 /* ======================= DATOS DE CATÁLOGO =======================
    Construidos a partir del diagnóstico del Excel (combinación código-nombre
    predominante). Los códigos son internos del dataset (no DIVIPOLA).       */
+INSERT INTO dbo.TipoDocumento VALUES (N'CC', N'Cédula de ciudadanía'), (N'CE', N'Cédula de extranjería'), (N'PA', N'Pasaporte');
+INSERT INTO dbo.Sexo VALUES (N'M', N'Masculino'), (N'F', N'Femenino'), (N'ND', N'No definido');
+INSERT INTO dbo.EstadoCivil VALUES (N'SOLTERO', N'Soltero(a)'), (N'CASADO', N'Casado(a)'), (N'UNION_LIBRE', N'Unión libre'), (N'DIVORCIADO', N'Divorciado(a)'), (N'VIUDO', N'Viudo(a)');
+INSERT INTO dbo.Zona VALUES (N'URBANA', N'Urbana'), (N'RURAL', N'Rural');
+INSERT INTO dbo.TipoVivienda VALUES (N'PROPIA', N'Propia'), (N'ARRENDADA', N'Arrendada'), (N'FAMILIAR', N'Familiar'), (N'OTRA', N'Otra');
+INSERT INTO dbo.Estrato VALUES (1, N'Bajo-bajo'), (2, N'Bajo'), (3, N'Medio-bajo'), (4, N'Medio'), (5, N'Medio-alto'), (6, N'Alto');
+INSERT INTO dbo.TipoContrato VALUES (N'FIJO', N'Término fijo'), (N'INDEFINIDO', N'Término indefinido'), (N'SERVICIOS', N'Prestación de servicios'), (N'NO_APLICA', N'No aplica');
+INSERT INTO dbo.RegimenSalud VALUES (N'CONTRIBUTIVO', N'Contributivo'), (N'SUBSIDIADO', N'Subsidiado'), (N'ESPECIAL', N'Especial'), (N'NO_AFILIADO', N'No afiliado');
+INSERT INTO dbo.CondicionDiscapacidad VALUES (N'SI', N'Sí'), (N'NO', N'No'), (N'ND', N'No definido');
+INSERT INTO dbo.CanalOrigen VALUES (N'WEB', N'Web'), (N'TELEFONO', N'Teléfono'), (N'PRESENCIAL', N'Presencial'), (N'FAX', N'Fax');
+
 INSERT INTO dbo.Departamento (DepartamentoCodigo, Nombre) VALUES
  (N'D01', N'CUNDINAMARCA'), (N'D02', N'BOGOTÁ D.C.'), (N'D03', N'ANTIOQUIA'),
  (N'D04', N'BOYACÁ'), (N'D05', N'VALLE DEL CAUCA');
